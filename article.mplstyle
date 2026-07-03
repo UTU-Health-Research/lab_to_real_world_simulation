@@ -1,0 +1,9 @@
+font.family: Arial
+mathtext.default: regular
+font.size: 16 
+figure.titlesize: 10
+axes.titlesize: 18 
+axes.labelsize: 18 
+axes.unicode_minus: False
+axes.spines.right: False
+axes.spines.top: False

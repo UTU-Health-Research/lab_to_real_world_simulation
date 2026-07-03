@@ -1,0 +1,11 @@
+verbose: False
+
+disease_mimic_prevalence_fp: [0.03, 0.2]
+disease_mimic_prob_fp: [0.063, 0.033]
+noise_prob_fp: [3.9, 6.9] #beta distribution
+fpr_fp: [0.091, 0.068]
+disease_mimic_prevalence_fn: [0,0]
+disease_mimic_prob_fn: [0,0]
+noise_prob_fn: [0.27,0.18]
+fnr_fn: [0.055, 0.054] 
+lab: False
