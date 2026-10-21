@@ -1,5 +1,6 @@
 import numpy as np
 import sklearn
+import random
 
 def calculate_ppv(sensitivity, specificity, prevalence):
     ppv = (sensitivity*prevalence)/((sensitivity*prevalence)+((1-specificity)*(1-prevalence)))
@@ -40,13 +41,13 @@ def create_labels(prevalence, n):
     return labels, predictions
 
 def modify_predictions(predictions, transition_mat):
-    for i, pred in enumerate(predictions):
+    predictions_copy = predictions.copy()
+    for i, pred in enumerate(predictions_copy):
         if pred == 0:
-            predictions[i] = np.random.binomial(1, transition_mat[0, 1])
+            predictions_copy[i] = np.random.binomial(1, transition_mat[0, 1])
         else:
-            predictions[i] = np.random.binomial(1, transition_mat[1,1])
-            
-    return predictions
+            predictions_copy[i] = np.random.binomial(1, transition_mat[1,1])
+    return predictions_copy
 
 def calculate_probabilities(args):
     #calculates probabilities that the predicition is positive when true label is positive and the prediction is positive when true label is negative
@@ -98,7 +99,34 @@ def calculate_probabilities(args):
     #calculate the final transition matrix
     transition_mat = np.matmul(np.matmul(fpr_fnr_mat, dm_mat), noise_mat)
 
+
     return transition_mat
+
+def rule_5_of_6(predictions, labels, prevalence, n):
+    predictions_one = []
+    for pred in predictions:
+        f = random.choices(np.arange(0,120))[0]
+        pos = 0
+        while f < len(pred)-180:
+            if pred[f] == 1:
+                if np.sum(pred[f::30][0:6]) >= 5:
+                    predictions_one.append(1)
+                    pos = 1
+                    break
+                else:
+                    f = f + 480
+            f = f + 480
+        if pos == 0:
+            predictions_one.append(0)
+
+
+    sens = calculate_sensitivity(labels, predictions_one)
+    spec = calculate_specificity(labels, predictions_one)
+    fpr = 1-calculate_specificity(labels, predictions_one)
+    ppv = calculate_ppv(sens, spec, prevalence)
+    positive_proportion = np.sum(predictions_one)/n
+
+    return sens, fpr, ppv, positive_proportion
 
 
 
